@@ -1,0 +1,221 @@
+{
+  "name": "ai-coding-agent",
+  "displayName": "AI Coding Agent",
+  "description": "VSCode AI Coding Agent - 对标 GitHub Copilot Agent 模式，支持多模型 API Key 配置",
+  "version": "1.0.0",
+  "publisher": "ai-coding-agent",
+  "engines": {
+    "vscode": "^1.90.0"
+  },
+  "categories": [
+    "AI",
+    "Chat",
+    "Programming Languages"
+  ],
+    "activationEvents": [
+    "onCommand:aiCodingAgent.configure",
+    "onCommand:aiCodingAgent.openSettings",
+    "onCommand:aiCodingAgent.openLogPanel",
+    "onCommand:aiCodingAgent.openChat",
+    "onView:aiCodingAgent.executionLog"
+  ],
+  "main": "./out/extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "aiCodingAgent.configure",
+        "title": "AI Agent: Configure Model",
+        "category": "AI Agent"
+      },
+      {
+        "command": "aiCodingAgent.openSettings",
+        "title": "AI Agent: Open Settings",
+        "category": "AI Agent"
+      },
+      {
+        "command": "aiCodingAgent.openLogPanel",
+        "title": "AI Agent: Open Execution Log",
+        "category": "AI Agent"
+      },
+      {
+        "command": "aiCodingAgent.openChat",
+        "title": "AI Agent: Open Chat",
+        "category": "AI Agent"
+      },
+      {
+        "command": "aiCodingAgent.quickConfigDeepSeekPro",
+        "title": "AI Agent: Quick Config DeepSeek V4 Pro",
+        "category": "AI Agent"
+      },
+      {
+        "command": "aiCodingAgent.quickConfigDeepSeekFlash",
+        "title": "AI Agent: Quick Config DeepSeek V4 Flash",
+        "category": "AI Agent"
+      },
+      {
+        "command": "aiCodingAgent.switchModel",
+        "title": "AI Agent: Switch Model",
+        "category": "AI Agent"
+      },
+      {
+        "command": "aiCodingAgent.cancelCurrentTask",
+        "title": "AI Agent: Cancel Current Task",
+        "category": "AI Agent"
+      },
+      {
+        "command": "aiCodingAgent.createBranch",
+        "title": "AI Agent: Create Branch",
+        "category": "AI Agent"
+      },
+      {
+        "command": "aiCodingAgent.confirmToolExecution",
+        "title": "AI Agent: Confirm Tool Execution",
+        "category": "AI Agent"
+      },
+      {
+        "command": "aiCodingAgent.rejectToolExecution",
+        "title": "AI Agent: Reject Tool Execution",
+        "category": "AI Agent"
+      }
+    ],
+    "configuration": {
+      "title": "AI Coding Agent",
+      "properties": {
+        "aiCodingAgent.models": {
+          "type": "array",
+          "default": [],
+          "description": "配置多个 AI 模型"
+        },
+        "aiCodingAgent.defaultModel": {
+          "type": "string",
+          "default": "",
+          "description": "默认使用的模型 ID"
+        },
+        "aiCodingAgent.maxContextTokens": {
+          "type": "number",
+          "default": 131072,
+          "description": "最大上下文 Token 数"
+        },
+        "aiCodingAgent.enableStreaming": {
+          "type": "boolean",
+          "default": true,
+          "description": "启用流式输出"
+        },
+        "aiCodingAgent.autoConfirmFileOperations": {
+          "type": "boolean",
+          "default": false,
+          "description": "自动确认文件操作（不推荐，仅用于测试）"
+        },
+        "aiCodingAgent.mcpServers": {
+          "type": "array",
+          "default": [],
+          "description": "MCP 服务器配置"
+        },
+        "aiCodingAgent.workspaceContextEnabled": {
+          "type": "boolean",
+          "default": true,
+          "description": "启用工作区上下文感知"
+        },
+        "aiCodingAgent.pricing": {
+          "type": "object",
+          "default": {
+            "deepseek-v4-pro": {
+              "inputPricePer1M": 0.5,
+              "outputPricePer1M": 2
+            },
+            "deepseek-v4-flash": {
+              "inputPricePer1M": 0.1,
+              "outputPricePer1M": 0.5
+            }
+          },
+          "description": "模型定价配置（每百万 Token）"
+        }
+      }
+    },
+    "chatParticipants": [
+      {
+        "id": "agent",
+        "name": "AI Coding Agent",
+        "description": "AI Coding Agent - 使用 DeepSeek 等大模型进行 AI 辅助编程"
+      }
+    ],
+    "views": {
+      "aiCodingAgentViewContainer": [
+        {
+          "id": "aiCodingAgent.executionLog",
+          "name": "Agent Execution Log",
+          "icon": "$(list-flat)"
+        }
+      ]
+    },
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "aiCodingAgentViewContainer",
+          "title": "AI Coding Agent",
+          "icon": "$(hubot)"
+        }
+      ]
+    },
+    "menus": {
+      "commandPalette": [
+        {
+          "command": "aiCodingAgent.confirmToolExecution",
+          "when": "false"
+        },
+        {
+          "command": "aiCodingAgent.rejectToolExecution",
+          "when": "false"
+        }
+      ],
+      "view/title": [
+        {
+          "view": "aiCodingAgent.executionLog",
+          "command": "aiCodingAgent.openLogPanel",
+          "when": "view == aiCodingAgent.executionLog",
+          "group": "navigation"
+        }
+      ]
+    },
+    "keybindings": [
+      {
+        "command": "aiCodingAgent.switchModel",
+        "key": "ctrl+shift+m",
+        "mac": "cmd+shift+m",
+        "when": "chatSessionVisible"
+      },
+      {
+        "command": "aiCodingAgent.cancelCurrentTask",
+        "key": "escape",
+        "when": "aiCodingAgent.isStreaming"
+      }
+    ],
+    "statusBar": [
+      {
+        "id": "aiCodingAgent.status",
+        "name": "AI Agent Status",
+        "text": "$(hubot) AI Agent",
+        "tooltip": "AI Coding Agent",
+        "alignment": "left"
+      }
+    ]
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run compile",
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./"
+  },
+  "devDependencies": {
+    "@types/mocha": "^10.0.10",
+    "@types/node": "^20.11.0",
+    "@types/uuid": "^10.0.0",
+    "@types/vscode": "^1.90.0",
+    "@vscode/test-electron": "^2.3.0",
+    "typescript": "^5.3.0"
+  },
+  "dependencies": {
+    "@microsoft/fetch-event-source": "^2.0.1",
+    "node-fetch": "^3.3.2",
+    "uuid": "^9.0.1"
+  }
+}
